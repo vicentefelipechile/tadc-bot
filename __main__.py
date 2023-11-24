@@ -28,6 +28,14 @@ RRA_DICT: dict[bool] = {
     "ra": True,
 }
 
+HOLA_DICT: dict[bool] = {
+    "hola": True,
+    "hla": True,
+    "ola": True,
+    "holi": True,
+    "oli": True,
+}
+
 
 # ==========================================================================
 # =============================== Bot Client ===============================
@@ -36,8 +44,7 @@ RRA_DICT: dict[bool] = {
 # Librerias
 import discord
 from discord import app_commands
-from database import DiscordDatabase
-
+from database.database_class import DiscordDatabase
 
 # Clases
 from discord import File
@@ -62,63 +69,70 @@ intents.message_content:    bool = True
 database:       DiscordDatabase = DiscordDatabase()
 bot:            Bot = Bot(intents=intents, command_prefix=DISCORD_PREFIX)
 
+async def load_extensions():
+    for filename in os.listdir("./commands"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"commands.{filename[:-3]}")
+
 @bot.event
 async def on_ready() -> None:
+    await load_extensions()
     await bot.tree.sync()
     
     print("=========================================")
     print(f"Bot iniciado correctamente - {bot.user}")
     print("=========================================")
 
-
+Yatesalude: dict[int | bool] = {}
 
 @bot.event
 async def on_message(message: discord.Message) -> None:
-    if message.author.bot:      return
+    if message.author.bot:
+        return
     contenido: str = None
-    
+
     database.user_add(message.author)
+
+    try:
+        contenido = message.content.lower()
+    except:
+        pass
     
-    try:                        contenido = message.content.lower()
-    except:                     pass
     
+    if HOLA_DICT.get(contenido):
+        mensaje: str = f"# ¡HOLA {message.author.name.upper()}! #"
+        
+        if Yatesalude.get(message.author.id):
+            mensaje = f"Ya te salude cabron"
+        elif message.author.id == 775371954852986891:
+            mensaje = f"# PINCHES PUTOS PENDEJOS, PUTOS PENDEJOS"
+        
+        Yatesalude[message.author.id] = True
+        
+        await message.reply(mensaje)
+
     if QUE_DICT.get(contenido):
         # Crear un embed con titulo "so" y un a imagen ubicada en "img/so.jpg"
-        
+
         embed: Embed = Embed(title=" ")
         embed.set_image(url="https://i.imgur.com/3ZD5yvb.jpg")
-        
+
         await message.channel.send(embed=embed)
-    
+
     elif RRA_DICT.get(contenido):
         embed: Embed = Embed(title="sos")
         embed.set_image(url="https://i.imgur.com/tn57RMC.png")
-        
+
         await message.channel.send(embed=embed)
-    
+
     elif contenido == "vos":
-        
+
         embed: Embed = Embed(title="...")
         embed.set_image(url="https://i.imgur.com/jU3ug3z.png")
-        
+
         await message.channel.send(embed=embed)
-    
+
     await bot.process_commands(message)
-
-
-async def pong() -> str:
-    return f"Pong! {round(bot.latency * 1000)}ms"
-
-# Comandos
-@bot.command()
-async def ping(ctx: Context) -> None:
-    # Responder con un pong y el tiempo de respuesta
-    await ctx.send( await pong() )
-
-@bot.tree.command(name="ping", description="Pong!")
-async def slash_ping(interaction: Interaction) -> None:
-    # Responder a la interaccion con una respuesta vacia
-    await interaction.response.send_message( await pong() )
 
 
 bot.run(DISCORD_TOKEN)
