@@ -12,7 +12,7 @@ dotenv.load_dotenv()
 
 DISCORD_TOKEN: str = os.getenv("DISCORD_TOKEN")
 DISCORD_PREFIX: str = os.getenv("DISCORD_PREFIX")
-
+MEDIA_PATH: str = os.getenv("MEDIA_PATH")
 
 QUE_DICT: dict[bool] = {
     "que": True,
@@ -104,7 +104,7 @@ async def on_message(message: discord.Message) -> None:
         if Yatesalude.get(message.author.id):
             mensaje = f"Ya te salude cabron"
         elif message.author.id == 775371954852986891:
-            mensaje = f"# PINCHES PUTOS PENDEJOS, PUTOS PENDEJOS"
+            mensaje = f"# Te quiero zamuz"
         
         Yatesalude[message.author.id] = True
         
@@ -114,20 +114,20 @@ async def on_message(message: discord.Message) -> None:
         # Crear un embed con titulo "so" y un a imagen ubicada en "img/so.jpg"
 
         embed: Embed = Embed(title=" ")
-        embed.set_image(url="https://i.imgur.com/3ZD5yvb.jpg")
+        embed.set_image(url=MEDIA_PATH + "img/so.jpg")
 
         await message.channel.send(embed=embed)
 
     elif RRA_DICT.get(contenido):
         embed: Embed = Embed(title="sos")
-        embed.set_image(url="https://i.imgur.com/tn57RMC.png")
+        embed.set_image(url=MEDIA_PATH + "img/sos.png")
 
         await message.channel.send(embed=embed)
 
     elif contenido == "vos":
 
         embed: Embed = Embed(title="...")
-        embed.set_image(url="https://i.imgur.com/jU3ug3z.png")
+        embed.set_image(url=MEDIA_PATH + "img/vos.png")
 
         await message.channel.send(embed=embed)
 
