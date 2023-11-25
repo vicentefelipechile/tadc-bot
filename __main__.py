@@ -6,7 +6,6 @@ print("=========================================")
 print("Inicializando bot...")
 print("=========================================")
 
-import re
 import os
 import dotenv
 dotenv.load_dotenv()
