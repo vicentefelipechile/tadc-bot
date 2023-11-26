@@ -7,6 +7,7 @@ print("Inicializando bot...")
 print("=========================================")
 
 import os
+import random
 import dotenv
 import time
 dotenv.load_dotenv()
@@ -18,8 +19,10 @@ MEDIA_PATH:             str = os.getenv("MEDIA_PATH")
 GUILD_ID:               int = int(os.getenv("GUILD_ID"))
 GENERAL_ID:             int = int(os.getenv("GENERAL_ID"))
 
-HD_RESPONSE_MIN:        int = int(os.getenv("HD_RESPONSE_MIN"))
-HD_RESPONSE_MAX:        int = int(os.getenv("HD_RESPONSE_MAX"))
+HD_RESPONSE_X_MIN:        int = int(os.getenv("HD_RESPONSE_X_MIN"))
+HD_RESPONSE_X_MAX:        int = int(os.getenv("HD_RESPONSE_X_MAX"))
+HD_RESPONSE_Y_MIN:        int = int(os.getenv("HD_RESPONSE_Y_MIN"))
+HD_RESPONSE_Y_MAX:        int = int(os.getenv("HD_RESPONSE_Y_MAX"))
 
 
 QUE_DICT: dict[str | bool] = {
@@ -72,18 +75,13 @@ COMO_DICT: dict[str | bool] = {
 
 # Librerias
 import discord
-from discord import app_commands
 from database.database_class import DiscordDatabase
 
 # Clases
-from discord import File
 from discord import Embed
 from discord import Intents
-from discord import Interaction
 from discord import Member
-from discord.app_commands import CommandTree
 from discord.ext.commands import Bot
-from discord.ext.commands import Context
 
 
 # Intents
@@ -141,17 +139,17 @@ async def on_message(message: discord.Message) -> None:
 
     if QUE_DICT.get(contenido):
         embed: Embed = Embed(title=" ").set_image(url=MEDIA_PATH + "img/so.jpg")
-        await message.channel.send(embed=embed)
+        await message.reply(embed=embed)
 
 
     elif RRA_DICT.get(contenido):
         embed: Embed = Embed(title="sos").set_image(url=MEDIA_PATH + "img/sos.png")
-        await message.channel.send(embed=embed)
+        await message.reply(embed=embed)
 
 
     elif contenido == "vos":
         embed: Embed = Embed(title="...").set_image(url=MEDIA_PATH + "img/vos.png")
-        await message.channel.send(embed=embed)
+        await message.reply(embed=embed)
 
 
     elif ADIOS_DICT.get(contenido):
@@ -167,8 +165,11 @@ async def on_message(message: discord.Message) -> None:
     if message.attachments:
         for attachment in message.attachments:
             if attachment.height and attachment.width:
-                if ( HD_RESPONSE_MIN < attachment.height < HD_RESPONSE_MAX ) and ( HD_RESPONSE_MIN < attachment.width < HD_RESPONSE_MAX ):
-                    embed: Embed = Embed(title=" ").set_image(url=MEDIA_PATH + "img/hd.jpeg")
+                if ( HD_RESPONSE_Y_MIN < attachment.height < HD_RESPONSE_Y_MAX ) and ( HD_RESPONSE_X_MIN < attachment.width < HD_RESPONSE_X_MAX ):
+                    img = random.randint(1, 2)
+                    img: str = MEDIA_PATH + f"img/hd/hd{img}.png"
+                    
+                    embed: Embed = Embed(title=" ").set_image(url=MEDIA_PATH + img)
                     
                     await message.reply(embed=embed)
                     break
