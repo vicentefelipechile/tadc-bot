@@ -153,6 +153,19 @@ async def on_message(message: discord.Message) -> None:
         embed: Embed = Embed(title="Hola").set_image(url=MEDIA_PATH + "img/hola.png")
         
         await message.reply(embed=embed)
+        
+        
+    # Si el mensaje contiene una imagen, obtener la resolucion de la imagen, si la imagen esta entre el rango 65x65 y 300x300 enviar un embed respondiendo: "¿Que no habia en hd?"
+    if message.attachments:
+        for attachment in message.attachments:
+            if attachment.height and attachment.width:
+                if 65 < attachment.height < 300 and 65 < attachment.width < 300:
+                    embed: Embed = Embed(title="¿Que no habia en hd?").set_image(url=MEDIA_PATH + "img/hd.jpeg")
+                    
+                    await message.reply(embed=embed)
+                    break
+    
+        
 
     await bot.process_commands(message)
 
