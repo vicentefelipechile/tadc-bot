@@ -18,6 +18,10 @@ MEDIA_PATH:             str = os.getenv("MEDIA_PATH")
 GUILD_ID:               int = int(os.getenv("GUILD_ID"))
 GENERAL_ID:             int = int(os.getenv("GENERAL_ID"))
 
+HD_RESPONSE_MIN:        int = int(os.getenv("HD_RESPONSE_MIN"))
+HD_RESPONSE_MAX:        int = int(os.getenv("HD_RESPONSE_MAX"))
+
+
 QUE_DICT: dict[str | bool] = {
     "que": True,
     "qe": True,
@@ -51,6 +55,15 @@ ADIOS_DICT: dict[str | bool] = {
     "no vemos": True,
     "no vemo": True,
 }
+
+
+COMO_DICT: dict[str | bool] = {
+    "como": True,
+    "cmo": True,
+    "como?": True,
+    "com?": True,
+}
+
 
 
 # ==========================================================================
@@ -95,7 +108,7 @@ async def load_extensions():
 async def on_ready() -> None:
     await load_extensions()
     await bot.tree.sync()
-    
+
     print("=========================================")
     print(f"Bot iniciado correctamente - {bot.user}")
     print("=========================================")
@@ -114,8 +127,8 @@ async def on_message(message: discord.Message) -> None:
         contenido = message.content.lower()
     except:
         pass
-    
-    
+
+
     if HOLA_DICT.get(contenido):
         mensaje: str = f"# ¡HOLA {message.author.name.upper()}! #"
         
@@ -129,38 +142,35 @@ async def on_message(message: discord.Message) -> None:
         await message.reply(mensaje)
 
     if QUE_DICT.get(contenido):
-        # Crear un embed con titulo "so" y un a imagen ubicada en "img/so.jpg"
-
-        embed: Embed = Embed(title=" ")
-        embed.set_image(url=MEDIA_PATH + "img/so.jpg")
-
+        embed: Embed = Embed(title=" ").set_image(url=MEDIA_PATH + "img/so.jpg")
         await message.channel.send(embed=embed)
+
 
     elif RRA_DICT.get(contenido):
-        embed: Embed = Embed(title="sos")
-        embed.set_image(url=MEDIA_PATH + "img/sos.png")
-
+        embed: Embed = Embed(title="sos").set_image(url=MEDIA_PATH + "img/sos.png")
         await message.channel.send(embed=embed)
+
 
     elif contenido == "vos":
-
-        embed: Embed = Embed(title="...")
-        embed.set_image(url=MEDIA_PATH + "img/vos.png")
-
+        embed: Embed = Embed(title="...").set_image(url=MEDIA_PATH + "img/vos.png")
         await message.channel.send(embed=embed)
-    
+
+
     elif ADIOS_DICT.get(contenido):
         embed: Embed = Embed(title="Hola").set_image(url=MEDIA_PATH + "img/hola.png")
-        
+        await message.reply(embed=embed)
+
+
+    elif COMO_DICT.get(contenido):
+        embed: Embed = Embed(title="Verga").set_image(url=MEDIA_PATH + "img/verga.png")
         await message.reply(embed=embed)
         
-        
-    # Si el mensaje contiene una imagen, obtener la resolucion de la imagen, si la imagen esta entre el rango 65x65 y 300x300 enviar un embed respondiendo: "¿Que no habia en hd?"
+
     if message.attachments:
         for attachment in message.attachments:
             if attachment.height and attachment.width:
-                if 65 < attachment.height < 300 and 65 < attachment.width < 300:
-                    embed: Embed = Embed(title="¿Que no habia en hd?").set_image(url=MEDIA_PATH + "img/hd.jpeg")
+                if ( HD_RESPONSE_MIN < attachment.height < HD_RESPONSE_MAX ) and ( HD_RESPONSE_MIN < attachment.width < HD_RESPONSE_MAX ):
+                    embed: Embed = Embed(title=" ").set_image(url=MEDIA_PATH + "img/hd.jpeg")
                     
                     await message.reply(embed=embed)
                     break
