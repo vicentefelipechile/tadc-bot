@@ -130,12 +130,10 @@ async def on_message(message: discord.Message) -> None:
 
 
     if HOLA_DICT.get(contenido):
-        mensaje: str = f"# ¡HOLA {message.author.name.upper()}! #"
+        mensaje: str = f"# ¡HOLA {message.author.name.upper()}!"
         
-        if Yatesalude.get(message.author.id):
-            mensaje = f"Ya te salude cabron"
-        elif message.author.id == 775371954852986891:
-            mensaje = f"# Te quiero zamuz"
+        if Yatesalude.get(message.author.id):           mensaje = f"Ya te salude cabron"
+        elif message.author.id == 775371954852986891:   mensaje = f"# Te quiero zamuz"
         
         Yatesalude[message.author.id] = True
         
