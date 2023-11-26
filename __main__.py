@@ -154,7 +154,7 @@ async def on_member_join(member: Member) -> None:
     
     embed: Embed = Embed(title=f"¡Bienvenido {member.name} al servidor de El Asombroso Circo digital!")
     
-    Imagen: str = MEDIA_PATH + "img/welcome/bienvenida.png"
+    Imagen: str = MEDIA_PATH + "img/welcome/normal.png"
     # Si la fecha actual es diciembre se enviara un mensaje con la imagen MEDIA_PATH + "img/welcome/navidad.png"
     if time.localtime().tm_mon == 12:
         Imagen = MEDIA_PATH + "img/welcome/navidad.png"
