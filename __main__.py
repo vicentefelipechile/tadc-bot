@@ -169,7 +169,7 @@ async def on_message(message: discord.Message) -> None:
                     img = random.randint(1, 2)
                     img: str = MEDIA_PATH + f"img/hd/hd{img}.png"
                     
-                    embed: Embed = Embed(title=" ").set_image(url=MEDIA_PATH + img)
+                    embed: Embed = Embed(title="FULL HD 4K").set_image(url=img)
                     
                     await message.reply(embed=embed)
                     break
