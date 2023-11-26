@@ -11,12 +11,12 @@ import dotenv
 import time
 dotenv.load_dotenv()
 
-DISCORD_TOKEN: str = os.getenv("DISCORD_TOKEN")
-DISCORD_PREFIX: str = os.getenv("DISCORD_PREFIX")
-MEDIA_PATH: str = os.getenv("MEDIA_PATH")
+DISCORD_TOKEN:          str = os.getenv("DISCORD_TOKEN")
+DISCORD_PREFIX:         str = os.getenv("DISCORD_PREFIX")
+MEDIA_PATH:             str = os.getenv("MEDIA_PATH")
 
-GUILD_ID: int = int(os.getenv("GUILD_ID"))
-GENERAL_ID: int = int(os.getenv("GENERAL_ID"))
+GUILD_ID:               int = int(os.getenv("GUILD_ID"))
+GENERAL_ID:             int = int(os.getenv("GENERAL_ID"))
 
 QUE_DICT: dict[bool] = {
     "que": True,
@@ -138,12 +138,6 @@ async def on_message(message: discord.Message) -> None:
 
     await bot.process_commands(message)
 
-
-# Cuando un usuario entre al servidor de discord (GUILD_ID) se enviara un mensaje al canal general (CHANNEL_ID) y
-# se enviara un mensaje mencionado al usuario que entro al servidor el siguiente mensaje:
-# ¡Bienvenido {Usuario} al servidor de El Asombroso Circo digital!
-# 
-# El mensaje sera un embed que contendra la imagen MEDIA_PATH + "img/bienvenida.jpg"
 
 @bot.event
 async def on_member_join(member: Member) -> None:
