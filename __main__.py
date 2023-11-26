@@ -8,11 +8,15 @@ print("=========================================")
 
 import os
 import dotenv
+import time
 dotenv.load_dotenv()
 
 DISCORD_TOKEN: str = os.getenv("DISCORD_TOKEN")
 DISCORD_PREFIX: str = os.getenv("DISCORD_PREFIX")
 MEDIA_PATH: str = os.getenv("MEDIA_PATH")
+
+GUILD_ID: int = int(os.getenv("GUILD_ID"))
+GENERAL_ID: int = int(os.getenv("GENERAL_ID"))
 
 QUE_DICT: dict[bool] = {
     "que": True,
@@ -50,6 +54,7 @@ from discord import File
 from discord import Embed
 from discord import Intents
 from discord import Interaction
+from discord import Member
 from discord.app_commands import CommandTree
 from discord.ext.commands import Bot
 from discord.ext.commands import Context
@@ -132,6 +137,31 @@ async def on_message(message: discord.Message) -> None:
         await message.channel.send(embed=embed)
 
     await bot.process_commands(message)
+
+
+# Cuando un usuario entre al servidor de discord (GUILD_ID) se enviara un mensaje al canal general (CHANNEL_ID) y
+# se enviara un mensaje mencionado al usuario que entro al servidor el siguiente mensaje:
+# ¡Bienvenido {Usuario} al servidor de El Asombroso Circo digital!
+# 
+# El mensaje sera un embed que contendra la imagen MEDIA_PATH + "img/bienvenida.jpg"
+
+@bot.event
+async def on_member_join(member: Member) -> None:
+    # Detectar si el servidor es igual al servidor de discord (GUILD_ID)
+    
+    if member.guild.id != GUILD_ID:
+        return
+    
+    embed: Embed = Embed(title=f"¡Bienvenido {member.name} al servidor de El Asombroso Circo digital!")
+    
+    Imagen: str = MEDIA_PATH + "img/welcome/bienvenida.png"
+    # Si la fecha actual es diciembre se enviara un mensaje con la imagen MEDIA_PATH + "img/welcome/navidad.png"
+    if time.localtime().tm_mon == 12:
+        Imagen = MEDIA_PATH + "img/welcome/navidad.png"
+    
+    embed.set_image(url=Imagen)
+
+    await bot.get_channel(GENERAL_ID).send(embed=embed)
 
 
 bot.run(DISCORD_TOKEN)
