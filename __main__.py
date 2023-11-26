@@ -18,7 +18,7 @@ MEDIA_PATH:             str = os.getenv("MEDIA_PATH")
 GUILD_ID:               int = int(os.getenv("GUILD_ID"))
 GENERAL_ID:             int = int(os.getenv("GENERAL_ID"))
 
-QUE_DICT: dict[bool] = {
+QUE_DICT: dict[str | bool] = {
     "que": True,
     "qe": True,
     "q": True,
@@ -26,17 +26,30 @@ QUE_DICT: dict[bool] = {
     "ke": True,
 }
 
-RRA_DICT: dict[bool] = {
+RRA_DICT: dict[str | bool] = {
     "rra": True,
     "ra": True,
 }
 
-HOLA_DICT: dict[bool] = {
+HOLA_DICT: dict[str | bool] = {
     "hola": True,
     "hla": True,
     "ola": True,
     "holi": True,
     "oli": True,
+}
+
+ADIOS_DICT: dict[str | bool] = {
+    "adios": True,
+    "chau": True,
+    "chao": True,
+    "bye": True,
+    "bai": True,
+    "nos vemos": True,
+    "nos vemo": True,
+    "nos vemoz": True,
+    "no vemos": True,
+    "no vemo": True,
 }
 
 
@@ -135,6 +148,11 @@ async def on_message(message: discord.Message) -> None:
         embed.set_image(url=MEDIA_PATH + "img/vos.png")
 
         await message.channel.send(embed=embed)
+    
+    elif ADIOS_DICT.get(contenido):
+        embed: Embed = Embed(title="Hola").set_image(url=MEDIA_PATH + "img/hola.png")
+        
+        await message.reply(embed=embed)
 
     await bot.process_commands(message)
 
