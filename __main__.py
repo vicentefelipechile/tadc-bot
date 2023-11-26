@@ -42,6 +42,7 @@ HOLA_DICT: dict[str | bool] = {
     "hola": True,
     "hla": True,
     "ola": True,
+    "oal": True,
     "holi": True,
     "oli": True,
 }
@@ -160,9 +161,18 @@ async def on_message(message: discord.Message) -> None:
     elif COMO_DICT.get(contenido):
         embed: Embed = Embed(title="Verga").set_image(url=MEDIA_PATH + "img/verga.png")
         await message.reply(embed=embed)
-        
 
-    if message.attachments:
+
+    elif "te amo" in contenido:
+        embed: Embed = Embed(title=" ").set_image(url=MEDIA_PATH + "img/teamo.png")
+        await message.reply(embed=embed)
+
+
+    elif contenido == "puto":
+        await message.add_reaction("😢")
+
+
+    elif message.attachments:
         for attachment in message.attachments:
             if attachment.height and attachment.width:
                 if ( HD_RESPONSE_Y_MIN < attachment.height < HD_RESPONSE_Y_MAX ) and ( HD_RESPONSE_X_MIN < attachment.width < HD_RESPONSE_X_MAX ):
