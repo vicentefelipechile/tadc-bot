@@ -176,7 +176,7 @@ async def on_message(message: discord.Message) -> None:
         for attachment in message.attachments:
             if attachment.height and attachment.width:
                 if ( HD_RESPONSE_Y_MIN < attachment.height < HD_RESPONSE_Y_MAX ) and ( HD_RESPONSE_X_MIN < attachment.width < HD_RESPONSE_X_MAX ):
-                    img = random.randint(1, 2)
+                    img = random.randint(1, 10)
                     img: str = MEDIA_PATH + f"img/hd/hd{img}.png"
                     
                     embed: Embed = Embed(title="FULL HD 4K").set_image(url=img)
