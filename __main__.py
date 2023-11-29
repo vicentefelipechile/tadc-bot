@@ -77,6 +77,7 @@ COMO_DICT: dict[str | bool] = {
 # Librerias
 import discord
 from database.database_class import DiscordDatabase
+from economy.economy_class import ModuloEconomia
 
 # Clases
 from discord import Embed
@@ -98,10 +99,19 @@ intents.message_content:    bool = True
 database:       DiscordDatabase = DiscordDatabase()
 bot:            Bot = Bot(intents=intents, command_prefix=DISCORD_PREFIX)
 
+bot.economy:    ModuloEconomia = ModuloEconomia()
+
 async def load_extensions():
     for filename in os.listdir("./commands"):
         if filename.endswith(".py"):
             await bot.load_extension(f"commands.{filename[:-3]}")
+    
+    # Cargar comandos de economia
+    for filename in os.listdir("./economy"):
+        if filename.endswith(".py"):
+            if f"economy.{filename[:-3]}" in ("economy.economy_class", "economy.economy_enum"):
+                continue
+            await bot.load_extension(f"economy.{filename[:-3]}")
 
 @bot.event
 async def on_ready() -> None:
@@ -130,6 +140,21 @@ async def on_message(message: discord.Message) -> None:
         contenido = message.content.lower()
     except:
         pass
+    
+    # Escoge una probabilidad de 1 en 50, si sale 1 entonces le avisas al jugador que gano de manera aleatoria monedas
+    if random.randint(1, 50) == 1:
+        if not bot.economy.UserExists(message.author):
+            bot.economy.CreateUser(message.author)
+        
+        # Se escoge una cantidad aleatoria de monedas entre 1 y 100
+        monedas: int = random.randint(1, 100)
+        
+        # Se le añade la cantidad de monedas al usuario
+        bot.economy.AddMoney(message.author, monedas)
+        
+        # Se le envia un mensaje al usuario
+        await message.channel.send(f"¡{message.author.mention} has ganado {monedas} Digital Coins! <:Bubble:1167495005196263524>")
+        
 
 
     if HOLA_DICT.get(contenido):
@@ -187,6 +212,13 @@ async def on_message(message: discord.Message) -> None:
                     
                     await message.reply(embed=embed)
                     break
+
+    if message.channel.id == GENERAL_ID:
+        if message.reference:
+            mensaje: discord.Message = await message.channel.fetch_message(message.reference.message_id)
+            print(f"{time.strftime('%H:%M:%S', time.localtime())} > {message.author.name.rjust(16)} : {(mensaje.content[:25] + '...').ljust(25)} - {message.content}")
+        else:
+            print(f"{time.strftime('%H:%M:%S', time.localtime())} > {message.author.name.rjust(16)} : {message.content}")
 
     if random.randint(1, 100) == 1:
         await message.channel.send("Simplemente no lo entiendo")

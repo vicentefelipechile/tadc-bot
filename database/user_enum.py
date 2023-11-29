@@ -6,7 +6,8 @@
 USER_DATABASE: str = """
     CREATE TABLE IF NOT EXISTS usuario (
         user_id             INTEGER PRIMARY KEY,
-        user_nick           TEXT,
+        user_name           TEXT,
+        user_nameglobal     TEXT,
         user_discriminator  INTEGER DEFAULT 0,
         user_joined_at      DATETIME,
         user_created_at     DATETIME
@@ -15,7 +16,7 @@ USER_DATABASE: str = """
 
 USER_ADD: str = """
     INSERT INTO
-        usuario (user_id, user_nick, user_discriminator, user_joined_at, user_created_at)
+        usuario (user_id, user_name, user_discriminator, user_joined_at, user_created_at)
     VALUES
         (?, ?, ?, ?, ?)
 """
@@ -26,7 +27,7 @@ USER_UPDATE: str = """
     SET
         user_name = ?,
         user_discriminator = ?,
-        user_nick = ?
+        user_name = ?
     WHERE
         user_id = ?
 """
