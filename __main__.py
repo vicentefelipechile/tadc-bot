@@ -111,6 +111,10 @@ async def on_ready() -> None:
     print("=========================================")
     print(f"Bot iniciado correctamente - {bot.user}")
     print("=========================================")
+    
+    # Canal = bot.get_channel(GENERAL_ID)
+    # Mensaje = input("Mensaje: ")
+    # await Canal.send(Mensaje)
 
 Yatesalude: dict[int | bool] = {}
 
@@ -176,15 +180,17 @@ async def on_message(message: discord.Message) -> None:
         for attachment in message.attachments:
             if attachment.height and attachment.width:
                 if ( HD_RESPONSE_Y_MIN < attachment.height < HD_RESPONSE_Y_MAX ) and ( HD_RESPONSE_X_MIN < attachment.width < HD_RESPONSE_X_MAX ):
-                    img = random.randint(1, 10)
+                    img = random.randint(1, 11)
                     img: str = MEDIA_PATH + f"img/hd/hd{img}.png"
                     
                     embed: Embed = Embed(title="FULL HD 4K").set_image(url=img)
                     
                     await message.reply(embed=embed)
                     break
-    
-        
+
+    if random.randint(1, 100) == 1:
+        await message.channel.send("Simplemente no lo entiendo")
+
 
     await bot.process_commands(message)
 

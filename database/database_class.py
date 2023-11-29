@@ -26,6 +26,7 @@ class DiscordDatabase:
         self.CursorConnection = self.MasterConnection.cursor()
         
         self.user_db_init()
+        self.user_info_db_init()
     
     
     # Usuario CRUD
@@ -44,7 +45,7 @@ class DiscordDatabase:
         
         self.CursorConnection.execute(USER_ADD, (
             user.id,
-            user.nick,
+            user.name,
             user.discriminator,
             datetime.now(),
             user.created_at,
@@ -57,7 +58,7 @@ class DiscordDatabase:
         self.CursorConnection.execute(USER_UPDATE, (
             user.name,
             user.discriminator,
-            user.nick,
+            user.name,
             user.id,
         ))
         
@@ -120,3 +121,7 @@ class DiscordDatabase:
         ))
         
         return self.CursorConnection.fetchone() is not None
+
+    def ObtenerInfoUsuario(self, user: User, info: str = None) -> str:
+        self.CursorConnection.execute(USER_INFO_GET, (user.id, info))
+        return self.CursorConnection.fetchone()
