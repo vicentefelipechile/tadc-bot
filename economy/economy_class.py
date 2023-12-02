@@ -4,6 +4,8 @@
 
 import sqlite3
 from datetime import datetime
+from time import time
+
 
 from discord import User
 from discord import Embed
@@ -68,7 +70,8 @@ class ModuloEconomia:
         try:
             self.CursorConnection.execute(ECONOMY_USER_MONEY_SET, (money, user.id))
             self.MasterConnection.commit()
-        except Error:
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
             return False
         
         return True
@@ -79,7 +82,8 @@ class ModuloEconomia:
         try:
             self.CursorConnection.execute(ECONOMY_USER_MONEY_ADD, (money, user.id))
             self.MasterConnection.commit()
-        except Error:
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
             return False
         
         return True
@@ -90,7 +94,73 @@ class ModuloEconomia:
         try:
             self.CursorConnection.execute(ECONOMY_USER_MONEY_ADD_MULTIPLIER, (money, user.id))
             self.MasterConnection.commit()
-        except Error:
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
+            return False
+        
+        return True
+
+    # CRUD Banco
+    def GetMoneyBank(self, user: User) -> int:
+        if not self.UserExists(user):   return 0
+        
+        try:
+            self.CursorConnection.execute(ECONOMY_USER_BANK_GET, (user.id,))
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
+            return 0
+        
+        return self.CursorConnection.fetchone()[0]
+
+    def SetMoneyBank(self, user: User, money: int = 0) -> bool:
+        if not self.UserExists(user):   return False
+        
+        try:
+            self.CursorConnection.execute(ECONOMY_USER_BANK_SET, (money, user.id))
+            self.MasterConnection.commit()
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
+            return False
+        
+        return True
+
+    def AddMoneyBank(self, user: User, money: int = 0) -> bool:
+        if not self.UserExists(user):   return False
+        
+        try:
+            self.CursorConnection.execute(ECONOMY_USER_BANK_ADD, (money, user.id))
+            self.MasterConnection.commit()
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
+            return False
+        
+        return True
+
+    def MoneyToBank(self, user: User, money: int = 0) -> bool:
+        if not self.UserExists(user):   return False
+        
+        # Verificar que el usuario tenga el dinero suficiente
+        if self.GetMoney(user) >= money: return False
+        
+        try:
+            self.CursorConnection.execute(ECONOMY_USER_MONEY_TO_BANK, (money, money, user.id))
+            self.MasterConnection.commit()
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
+            return False
+        
+        return True
+
+    def MoneyFromBank(self, user: User, money: int = 0) -> bool:
+        if not self.UserExists(user):   return False
+        
+        if self.GetMoneyBank(user) <= money: return False
+        
+        try:
+            self.CursorConnection.execute(ECONOMY_USER_MONEY_FROM_BANK, (money, money, user.id))
+            self.MasterConnection.commit()
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
             return False
         
         return True
@@ -102,7 +172,8 @@ class ModuloEconomia:
         try:
             self.CursorConnection.execute(ECONOMY_USER_GET, (user.id,))
             user_profile: tuple = self.CursorConnection.fetchone()
-        except Error:
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
             return None
         
         PROFILE: Embed = PROFILE_EMBED.copy()
@@ -112,3 +183,35 @@ class ModuloEconomia:
         PROFILE.add_field(name="Banco Digital", value=f"{user_profile[4]}", inline=False)
         
         return PROFILE
+    
+    # Trabajo
+    def ActionWork(self, user: User) -> bool:
+        if not self.UserExists(user):   return False
+        
+        try:
+            self.CursorConnection.execute(ECONOMY_USER_WORK_ACTION, (user.id,))
+            self.MasterConnection.commit()
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
+            return False
+        
+        return True
+    
+    def GetLastWork(self, user: User) -> int:
+        if not self.UserExists(user):   return 0
+        
+        try:
+            self.CursorConnection.execute(ECONOMY_USER_WORK_LASTTIME, (user.id,))
+            user_profile: tuple = self.CursorConnection.fetchone()
+        except Error as e:
+            print("[SQL ERROR] > " + str(e))
+            return 0
+        
+        return user_profile[0]
+    
+    def CanWork(self, user: User, delay: int = 10) -> bool:
+        if not self.UserExists(user):   return False
+        
+        lasttime = self.GetLastWork(user)
+        
+        return lasttime > delay
