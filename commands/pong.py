@@ -30,7 +30,7 @@ class CommandPong(Cog):
         member = member or ctx.author
         if self._last_member is None or self._last_member.id != member.id:
             if member.id == 775371954852986891:
-                await ctx.send(f"Pinches putos pendejos, putos pendejos")
+                await ctx.send(f"Adios, supongo")
             else:
                 await ctx.send(f"Adios {member.name} :(")
         else:
@@ -39,4 +39,5 @@ class CommandPong(Cog):
         self._last_member = member
 
 async def setup(bot: Bot):
-    await bot.add_cog(CommandPong(bot))
+    ...
+    # await bot.add_cog(CommandPong(bot))

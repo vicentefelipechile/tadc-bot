@@ -127,22 +127,23 @@ async def on_ready() -> None:
     # await Canal.send(Mensaje)
 
 Yatesalude: dict[int | bool] = {}
+BLACKLIST: list[str] = [
+    643099106419671041
+]
 
 @bot.event
 async def on_message(message: discord.Message) -> None:
-    if message.author.bot:
-        return
-    contenido: str = None
+    if message.author.bot:              return
 
     database.user_add(message.author)
+    if message.author.id in BLACKLIST:  return
 
-    try:
-        contenido = message.content.lower()
-    except:
-        pass
-    
-    # Escoge una probabilidad de 1 en 50, si sale 1 entonces le avisas al jugador que gano de manera aleatoria monedas
-    if random.randint(1, 50) == 1:
+    contenido: str = None
+    try:                                contenido = message.content.lower()
+    except:                             pass
+
+
+    if random.randint(1, 80) <= 5:
         if not bot.economy.UserExists(message.author):
             bot.economy.CreateUser(message.author)
         
@@ -161,7 +162,7 @@ async def on_message(message: discord.Message) -> None:
         mensaje: str = f"# ¡HOLA {message.author.name.upper()}!"
         
         if Yatesalude.get(message.author.id):           mensaje = f"Ya te salude cabron"
-        elif message.author.id == 775371954852986891:   mensaje = f"# Te quiero zamuz"
+        elif message.author.id == 775371954852986891:   mensaje = f"Hola, supongo"
         
         Yatesalude[message.author.id] = True
         
